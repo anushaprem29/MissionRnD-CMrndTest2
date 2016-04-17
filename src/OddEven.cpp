@@ -37,8 +37,51 @@ struct oddevennode{
 	struct oddevennode * random;
 
 };
-
 int * oddeven_sll(struct oddevennode *head){
+	struct oddevennode *prevOdd = NULL, *prevEven = NULL;
+	if (head == NULL)	return NULL;
+	struct oddevennode *first = head;
+	int *arr = (int *)malloc(sizeof(int) * 2);
+	arr[0] = 0; arr[1] = 0;
+	while (first != NULL){
+		if (first->data % 2 == 0){
+			//even
+			arr[1]++;
+			prevEven = first;
+			first = first->next;
+			break;
+		}
+		first = first->next;
+	}
+	while (first != NULL){
+		if (first->data % 2 == 0){
+			prevEven->random = first;
+			prevEven = first;
+			arr[1]++;
 
-	return NULL;
+		}
+		first = first->next;
+	}
+	prevEven->random = NULL;
+	first = head;
+	while (first != NULL){
+		if (first->data % 2 != 0){
+			//odd
+			arr[0]++;
+			prevOdd = first;
+			first = first->next;
+			break;
+		}
+		first = first->next;
+	}
+	while (first != NULL){
+		if (first->data % 2 != 0){
+			prevOdd->random = first;
+			prevOdd = first;
+			arr[0]++;
+		}
+		first = first->next;
+	}
+	prevOdd->random = NULL;
+	return arr;
 }

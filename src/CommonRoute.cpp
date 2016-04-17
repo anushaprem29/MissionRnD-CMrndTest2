@@ -48,8 +48,74 @@ First Island in DTD ie 'D' occurs alphabatically before 'H' and 'Z')
 #include <stdlib.h>
 #include <stdio.h>
 
+int len(char *s){
+	int iter;
+	for (iter = 0; s[iter] != NULL; iter++){
+		iter++;
+	}
+	return iter;
+}
+void check(char *str, char *word,int arr[30][2], int start, int end, int *index){
+	int iter, iter2=start, len1 = len(word);
+	for (iter = 0; iter < len1; iter++){
+		if (word[iter] == str[iter2] && iter2<=end){ iter2++;
+		if (iter2 == end + 1){ 
+			arr[*index][0] = end -start;
+			arr[*index][1] = end +1;
+			(*index)++;
+			return; }
+		}
+		else{
+			iter2 = start;
+		}
+		
+	}
+}
+
+char * get_sub_string(char *str, int i, int j){
+	int iter;
+	if (str == NULL || i > j)	return NULL;
+	char * sub = (char *)malloc(sizeof(char)*(j - i + 2));
+	for (iter = i; iter <= j; iter++){
+		if (str[iter] != '\0'){
+			sub[iter - i] = str[iter];
+		}
+	}
+	sub[iter - i] = '\0';
+	return sub;
+}
 
 char * find_common_route(char * hacklist, char *codelist, int *cost){
+	if(hacklist==NULL||codelist==NULL||cost==NULL)	return NULL;
+	int iter1, iter2,iter3=0;
+	int len1 = len(hacklist);
+	int len2 = len(codelist);
+	int arr[30][2];
+	for (iter1 = 0; iter1 < len1; iter1++){
+		for (iter2 = iter1 + 1; iter2 < len1; iter2++){
+			check(hacklist, codelist,arr,iter1,iter2,&iter3);
+		}
+	}
+	int start = 0, end = 0;
+	int  max = arr[0][1] - arr[0][0];
+	for (iter1 = 1; iter1 < 30; iter1++){
+		if ((arr[iter1][1] - arr[iter1][0]) > max){
+			max = arr[iter1][1] - arr[iter1][0];
+			start = arr[iter1][0];
+			end = arr[iter1][1] ;
+		}
+	}
+	for (iter1 = 0; iter1 < 30; iter1++){
+		if ((arr[iter1][1] - arr[iter1][0]) == max){
+			*cost = 0;
+			for (iter2 = arr[iter1][0]; iter2 <= arr[iter1][1]; iter2++){
+				*cost += codelist[iter2];
+			}
+			return get_sub_string(codelist, start, end);
+		}
+	}
 	return NULL;
 }
+
+
 
